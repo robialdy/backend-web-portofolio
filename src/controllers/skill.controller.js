@@ -58,13 +58,10 @@ export default {
     }
   },
   async create(req, res) {
-    const { name, category } = req.body;
-    const icon = req.file ? req.file.filename : "default.jpg";
-
     try {
-      await skillDAO.validate({ name, category, icon });
+      await skillDAO.validate(req.body);
 
-      const result = await SkillModel.create({ name, category, icon });
+      const result = await SkillModel.create(req.body);
 
       res.status(200).json({
         meta: {
@@ -86,35 +83,10 @@ export default {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { name, category } = req.body;
 
-      const skill = await SkillModel.findById(id);
-      if (!skill) {
-        return res.status(404).json({
-          meta: {
-            status: 404,
-            message: "Skill not found",
-          },
-          data: null,
-        });
-      }
-
-      let icon = skill.icon;
-      if (req.file) {
-        icon = req.file.filename;
-
-        // hapus icon lama
-        const oldIcon = path.join(dirname, "../../uploads/image", skill.icon);
-        if (fs.existsSync(oldIcon)) {
-          fs.unlinkSync(oldIcon);
-        }
-      }
-
-      const result = await SkillModel.findByIdAndUpdate(
-        id,
-        { name, category, icon },
-        { new: true }
-      );
+      const result = await SkillModel.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
 
       res.status(200).json({
         meta: {
@@ -136,23 +108,6 @@ export default {
   async remove(req, res) {
     try {
       const { id } = req.params;
-      const skill = await SkillModel.findById(id);
-      if (!skill) {
-        res.status(404).json({
-          meta: {
-            status: 404,
-            message: "Skill not found",
-          },
-          data: null,
-        });
-      }
-
-      // hapus icon lama
-      const oldIcon = path.join(dirname, "../../uploads/image", skill.icon);
-      if (fs.existsSync(oldIcon)) {
-        fs.unlinkSync(oldIcon);
-      }
-
       const result = await SkillModel.findByIdAndDelete(id, { new: true });
 
       res.status(200).json({

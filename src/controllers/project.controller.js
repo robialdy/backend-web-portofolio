@@ -41,7 +41,7 @@ export default {
     } catch (error) {
       res.status(500).json({
         meta: {
-          status:500,
+          status: 500,
           message: error,
         },
         data: null,
@@ -50,8 +50,7 @@ export default {
   },
   async create(req, res) {
     try {
-      const { image, technologies, ...data } = req.body;
-      const foto = req.file ? req.file.filename : image || "default.jpg";
+      const { technologies, ...data } = req.body;
 
       // diubah apabila string
       const techn =
@@ -59,16 +58,12 @@ export default {
           ? technologies.split(",").map((t) => t.trim())
           : technologies;
 
-      await projectDAO.validate({ ...data, image: foto, technologies: techn });
+      await projectDAO.validate({ ...data, technologies: techn });
 
-      const result = await ProjectModel.create(
-        {
-          ...data,
-          image: foto,
-          technologies: techn,
-        },
-        { new: true }
-      );
+      const result = await ProjectModel.create({
+        ...data,
+        technologies: techn,
+      });
 
       res.status(200).json({
         meta: {
@@ -90,7 +85,7 @@ export default {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { image, technologies, ...data } = req.body;
+      const { technologies, ...data } = req.body;
 
       // diubah apabila string
       const techn =
@@ -98,35 +93,9 @@ export default {
           ? technologies.split(",").map((t) => t.trim())
           : technologies;
 
-      const project = await ProjectModel.findById(id);
-      if (!project) {
-        return res.status(404).json({
-          meta: {
-            status: 404,
-            message: "Skill not found",
-          },
-          data: null,
-        });
-      }
-
-      //   hapus kalau ada request file kalo gada ya udh pake foto lama
-      let foto = project.image;
-      if (req.file) {
-        foto = req.file.filename;
-
-        const oldImage = path.join(
-          dirname,
-          "../../uploads/image",
-          project.image
-        );
-        if (fs.existsSync(oldImage)) {
-          fs.unlinkSync(oldImage);
-        }
-      }
-
       const result = await ProjectModel.findByIdAndUpdate(
         id,
-        { ...data, image: foto, technologies: techn },
+        { ...data, technologies: techn },
         { new: true }
       );
 
@@ -149,34 +118,16 @@ export default {
   },
   async remove(req, res) {
     try {
+      const { id } = req.params;
+      const result = await ProjectModel.findByIdAndDelete(id, { new: true });
 
-        const {id} = req.params;
-        const project = await ProjectModel.findById(id);
-        if (!project) {
-          return res.status(404).json({
-            meta: {
-              status: 404,
-              message: "Skill not found",
-            },
-            data: null,
-          });
-        }
-
-        const oldImage = path.join(dirname, "../../uploads/image", project.image);
-        if (fs.existsSync(oldImage)) {
-            fs.unlinkSync(oldImage);
-        }
-
-        const result = await ProjectModel.findByIdAndDelete(id, {new: true});
-
-        res.status(200).json({
-            meta: {
-                status: 200,
-                message: "Successfuly delete project"
-            },
-            data: result
-        });
-
+      res.status(200).json({
+        meta: {
+          status: 200,
+          message: "Successfuly delete project",
+        },
+        data: result,
+      });
     } catch (error) {
       res.status(500).json({
         meta: {
