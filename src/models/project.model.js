@@ -12,7 +12,7 @@ export const projectDAO = Yup.object({
     .min(1, "At least one technology is required")
     .required("Technologies are required"),
   link: Yup.string(),
-  onShow: Yup.boolean().default(false),
+  onShow: Yup.boolean(),
 });
 
 const ProjectSchema = new Schema({

@@ -18,7 +18,7 @@ export default {
     } catch (error) {
       res.status(500).json({
         meta: {
-          status: 200,
+          status: 500,
           message: error,
         },
         data: null,
@@ -41,7 +41,7 @@ export default {
     } catch (error) {
       res.status(500).json({
         meta: {
-          status: 200,
+          status:500,
           message: error,
         },
         data: null,
