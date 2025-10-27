@@ -6,14 +6,14 @@ import fs from "fs";
 export default {
   async findAll(req, res) {
     try {
-      const skills = await SkillModel.find();
+      const result = await SkillModel.find();
 
       res.status(200).json({
         meta: {
           status: 200,
           message: "Success get all skill data",
         },
-        data: skills,
+        data: result,
       });
     } catch (error) {
       res.status(500).json({
@@ -31,7 +31,7 @@ export default {
 
       const result = await SkillModel.findById(id);
       if (!result) {
-        res.status(404).json({
+        return res.status(404).json({
           meta: {
             status: 404,
             message: "Skill not found",
@@ -153,7 +153,7 @@ export default {
         fs.unlinkSync(oldIcon);
       }
 
-      const result = await SkillModel.findByIdAndDelete(id);
+      const result = await SkillModel.findByIdAndDelete(id, { new: true });
 
       res.status(200).json({
         meta: {

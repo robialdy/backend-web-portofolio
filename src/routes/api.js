@@ -4,6 +4,7 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 import profileController from "../controllers/profile.controller.js";
 import skillController from "../controllers/skill.controller.js";
 import upload from "../middlewares/upload.middleware.js";
+import projectController from "../controllers/project.controller.js";
 
 const router = express.Router();
 
@@ -22,6 +23,13 @@ router.post("/skill", [authMiddleware, upload.single("icon")], skillController.c
 router.put("/skill/:id", [authMiddleware, upload.single("icon")], skillController.update);
 router.delete("/skill/:id", authMiddleware, skillController.remove);
 router.get("/skill/:id", skillController.findOne);
+
+// PROJECT
+router.get("/project", projectController.findAll);
+router.get("/project/:id", projectController.findOne);
+router.post("/project", [authMiddleware, upload.single('image')], projectController.create);
+router.put("/project/:id", [authMiddleware, upload.single('image')], projectController.update);
+router.delete("/project/:id", authMiddleware, projectController.remove);
 
 // dummy
 router.get("/dummy", (req, res) => {

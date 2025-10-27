@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 export const skillDAO = Yup.object({
     name: Yup.string().required(),
     category: Yup.string().required(),
-    icon: Yup.string().required(),
+    icon: Yup.string(),
 });
 
 const SkillSchema = new Schema({
