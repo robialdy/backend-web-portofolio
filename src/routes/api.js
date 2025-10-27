@@ -6,6 +6,7 @@ import skillController from "../controllers/skill.controller.js";
 import upload from "../middlewares/upload.middleware.js";
 import projectController from "../controllers/project.controller.js";
 import certificatesController from "../controllers/certificates.controller.js";
+import messageController from "../controllers/message.controller.js";
 
 const router = express.Router();
 
@@ -38,6 +39,11 @@ router.get("/certificates/:id", certificatesController.findOne);
 router.post("/certificates", authMiddleware, certificatesController.create);
 router.put("/certificates/:id", authMiddleware, certificatesController.update);
 router.delete("/certificates/:id", authMiddleware, certificatesController.remove);
+
+// MESSSAGE
+router.get("/message", authMiddleware, messageController.findAll);
+router.post("/message", messageController.create);
+router.delete("/message/:id", authMiddleware, messageController.remove);
 
 // dummy
 router.get("/dummy", (req, res) => {
